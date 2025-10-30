@@ -88,3 +88,19 @@ type ActivityPubNote struct {
 	Properties   map[string]interface{}  `json:"as:properties,omitempty" bson:"properties,omitempty"`
 	PackageName  string                  `json:"as:packageName,omitempty" bson:"packageName,omitempty"`
 }
+
+type FollowModal struct {
+	Who  string `bson:"who"`  // actor who follows
+	Whom string `bson:"whom"` // actor who is followed
+	Date string `bson:"date"` // YYYY-MM-DD HH:MM:SS
+	Id   string `bson:"id"`
+}
+
+type ActivityPubAnnouncement struct {
+	Id   string   `bson:"id"`
+	To   string   `bson:"to"`
+	Cc   []string `bson:"cc"`
+	Who  string   `bson:"who"`
+	What string   `bson:"what"`
+	When string   `bson:"when"`
+}
