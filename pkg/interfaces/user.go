@@ -16,8 +16,8 @@ type User interface {
 	GetRsaPrivateKeyPemWithSession(sessionToken string, session *types.SessionsModal) (string, error)
 	GetRootActivityResourceUrl() string
 	GetActorUrl() string
-	ListFollowers() string
-	ListFollowing() string
+	ListFollowers() []string
+	ListFollowing() []string
 	App(packageName string) (App, error)
 	CheckPermission(permission string) bool
 	CheckPassword(password string) bool
