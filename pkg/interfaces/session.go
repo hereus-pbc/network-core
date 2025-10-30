@@ -10,7 +10,7 @@ type SessionManager interface {
 
 type Session interface {
 	GetKernel() Kernel
-	GetSession() types.SessionsModal
+	GetSession() *types.SessionsModal
 	GetUser() User
 	GetSessionToken() string
 }
