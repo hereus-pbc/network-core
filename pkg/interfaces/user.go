@@ -14,10 +14,10 @@ type User interface {
 	DeriveMiddleKey(encryptionType string, pass string, newPass string) (string, error)
 	DecryptWithSession(sessionToken string, session *types.SessionsModal, encrypted string) ([]byte, error)
 	GetRsaPrivateKeyPemWithSession(sessionToken string, session *types.SessionsModal) (string, error)
-	GetRootActivityResourceUrl() string
+	GetRootActivityResourceUrl(name string) string
 	GetActorUrl() string
-	ListFollowers() string
-	ListFollowing() string
+	ListFollowers() []string
+	ListFollowing() []string
 	App(packageName string) (App, error)
 	CheckPermission(permission string) bool
 	CheckPassword(password string) bool
