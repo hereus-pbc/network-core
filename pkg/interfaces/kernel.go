@@ -11,7 +11,7 @@ type Kernel interface {
 	PushOutgoingActivity(activity types.ActivityStream)
 	SendOutgoingActivity(activity types.ActivityStream)
 	ProcessActivityRoutine()
-	SendOutgoingActivityRoutine(user User, sessionToken string, session *types.SessionsModal)
+	SendOutgoingActivityRoutine(session Session)
 	ReadConfig(key string, result interface{}) error
 	ReadConfigString(key string) (string, error)
 	GetDomain() string
