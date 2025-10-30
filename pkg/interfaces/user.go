@@ -19,7 +19,6 @@ type User interface {
 	ListFollowers() []string
 	ListFollowing() []string
 	App(packageName string) (App, error)
-	CheckPermission(permission string) bool
 	CheckPassword(password string) bool
 	IsMultiFactorEnabled() bool
 	CheckTOTP(code string) bool
