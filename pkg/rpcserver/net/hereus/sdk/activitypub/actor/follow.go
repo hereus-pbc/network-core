@@ -10,11 +10,11 @@ import (
 	"github.com/hereus-pbc/network-core/pkg/types"
 )
 
-type FollowRequest struct {
+type FollowArguments struct {
 	Handle string `json:"handle"`
 }
 
-func Follow(session interfaces.Session, req *FollowRequest) error {
+func Follow(session interfaces.Session, req *FollowArguments) error {
 	if req.Handle == "" {
 		return fmt.Errorf("handle is required")
 	}
