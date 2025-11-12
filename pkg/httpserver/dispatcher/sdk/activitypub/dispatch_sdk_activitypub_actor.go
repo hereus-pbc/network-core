@@ -1,9 +1,10 @@
-package http_server
+package dispatcher_sdk_activitypub
 
 import (
 	"fmt"
 	"net/http"
 
+	"github.com/hereus-pbc/network-core/pkg/httpserver/helpers"
 	"github.com/hereus-pbc/network-core/pkg/interfaces"
 	rpc_net_hereus_sdk_activitypub_actor "github.com/hereus-pbc/network-core/pkg/rpcserver/net/hereus/sdk/activitypub/actor"
 )
@@ -12,17 +13,17 @@ func handleActivityPubSDKActor(session interfaces.Session, w http.ResponseWriter
 	switch innerFunction {
 	case "follow":
 		var req rpc_net_hereus_sdk_activitypub_actor.FollowArguments
-		if tryReadBody(r, w, &req) {
+		if helpers.TryReadBody(r, w, &req) {
 			err = rpc_net_hereus_sdk_activitypub_actor.Follow(session, &req)
 		}
 	case "unfollow":
 		var req rpc_net_hereus_sdk_activitypub_actor.UnfollowArguments
-		if tryReadBody(r, w, &req) {
+		if helpers.TryReadBody(r, w, &req) {
 			err = rpc_net_hereus_sdk_activitypub_actor.Unfollow(session, &req)
 		}
 	case "get":
 		var req rpc_net_hereus_sdk_activitypub_actor.GetArguments
-		if tryReadBody(r, w, &req) {
+		if helpers.TryReadBody(r, w, &req) {
 			return rpc_net_hereus_sdk_activitypub_actor.Get(session, &req)
 		}
 	case "listFollowers":

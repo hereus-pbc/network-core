@@ -6,25 +6,9 @@ import (
 	"strings"
 	"time"
 
+	dispatcher_theprotocols "github.com/hereus-pbc/network-core/pkg/httpserver/dispatcher/theprotocols"
 	"github.com/hereus-pbc/network-core/pkg/interfaces"
-	rpc_org_theprotocols_network "github.com/hereus-pbc/network-core/pkg/rpcserver/org/theprotocols/network"
-	rpc_org_theprotocols_session "github.com/hereus-pbc/network-core/pkg/rpcserver/org/theprotocols/session"
 )
-
-func handleTheProtocolsCore(kernel interfaces.Kernel, w http.ResponseWriter, r *http.Request, functionName string, endpoint string) {
-	switch functionName {
-	case "network":
-		out, err := rpc_org_theprotocols_network.HandleNetworkInformation(kernel)
-		convertRpcResponseToHttpResponse(out, err, w)
-	case "session.getUserId":
-		kernel.SessionWrapper(w, r, []string{}, func(session interfaces.Session) {
-			out, err := rpc_org_theprotocols_session.GetUserId(session)
-			convertRpcResponseToHttpResponse(out, err, w)
-		})
-	default:
-		http.Error(w, fmt.Sprintf("Unknown endpoint: %s", endpoint), http.StatusNotFound)
-	}
-}
 
 func dispatchRpcEndpoints(kernel interfaces.Kernel) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -53,7 +37,7 @@ func dispatchRpcEndpoints(kernel interfaces.Kernel) http.HandlerFunc {
 		functionName := strings.Join(endpointPieces[2:], ".")
 		switch domainRoot {
 		case "theprotocols.org":
-			handleTheProtocolsCore(kernel, w, r, functionName, endpoint)
+			dispatcher_theprotocols.HandleTheProtocolsCore(kernel, w, r, functionName, endpoint)
 		case "hereus.net":
 			handleHereUS(kernel, w, r, functionName, endpoint)
 		default:

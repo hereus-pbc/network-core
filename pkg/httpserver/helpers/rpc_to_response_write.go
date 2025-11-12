@@ -1,4 +1,4 @@
-package http_server
+package helpers
 
 import (
 	"encoding/json"
@@ -95,11 +95,19 @@ func rpcToResponseWrite(outputOrPtr interface{}, w http.ResponseWriter) {
 	}
 }
 
-func convertRpcResponseToHttpResponse(output interface{}, err error, w http.ResponseWriter) {
+func ConvertRpcResponseToHttpResponse(output interface{}, err error, w http.ResponseWriter) {
 	if err != nil {
 		fmt.Println(err)
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
 	rpcToResponseWrite(output, w)
+}
+
+func TryReadBody(r *http.Request, w http.ResponseWriter, req interface{}) bool {
+	if json.NewDecoder(r.Body).Decode(&req) != nil {
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return false
+	}
+	return true
 }
