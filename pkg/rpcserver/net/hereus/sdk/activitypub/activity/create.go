@@ -11,17 +11,19 @@ import (
 )
 
 type ActivityType struct {
-	Summary        string                 `json:"summary"`        // Plaintext summary of the activity ("content")
-	ContentWarning string                 `json:"contentWarning"` // Content warning ("summary", "sensitive" => if != "")
-	InReplyTo      string                 `json:"inReplyTo"`      // ID of the object being replied to, if any ("inReplyTo")
-	To             string                 `json:"to"`             // Audience ("to")
-	Cc             []string               `json:"cc"`             // Audience ("cc", optional)
-	Attachments    []string               `json:"attachments"`    // Attachment URLs ("attachment", optional)
-	Properties     map[string]interface{} `json:"properties"`     // Additional custom properties
-	Url            string                 `json:"url"`            // URL of the activity (optional, server will generate if empty)
-	Owner          string                 `json:"owner"`          // Owner of the activity
-	Published      string                 `json:"published"`      // Publication date (optional, server will generate if empty)
-	Id             string                 `json:"id"`             // ID of the activity (optional, server will generate if empty)
+	Summary         string                 `json:"summary"`         // Plaintext summary of the activity ("content")
+	ContentWarning  string                 `json:"contentWarning"`  // Content warning ("summary", "sensitive" => if != "")
+	InReplyTo       string                 `json:"inReplyTo"`       // ID of the object being replied to, if any ("inReplyTo")
+	To              string                 `json:"to"`              // Audience ("to")
+	Cc              []string               `json:"cc"`              // Audience ("cc", optional)
+	Attachments     []string               `json:"attachments"`     // Attachment URLs ("attachment", optional)
+	Properties      map[string]interface{} `json:"properties"`      // Additional custom properties
+	Url             string                 `json:"url"`             // URL of the activity (optional, server will generate if empty)
+	Owner           string                 `json:"owner"`           // Owner of the activity
+	Published       string                 `json:"published"`       // Publication date (optional, server will generate if empty)
+	Id              string                 `json:"id"`              // ID of the activity (optional, server will generate if empty)
+	ActorsLiked     []string               `json:"actorsLiked"`     // List of actors who liked this activity
+	ActorsAnnounced []string               `json:"actorsAnnounced"` // List of actors who announced this activity
 }
 
 type CreateArguments struct {

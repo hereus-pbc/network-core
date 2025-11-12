@@ -21,7 +21,7 @@ func Unlike(session interfaces.Session, req *UnlikeArguments) error {
 		return fmt.Errorf("failed to fetch note: %w", err)
 	}
 	id := fmt.Sprintf("https://%s/activitypub/activities/like-%s", session.GetKernel().GetDomain(), randomizer.Random128ByteString())
-	ids, err := session.GetKernel().ActivityPubDB().UnlikeNote(session.GetUser().GetActorUrl(), note.Id)
+	ids, err := session.GetKernel().ActivityPubDB().RemoveLike(session.GetUser().GetActorUrl(), note.Id)
 	if err != nil {
 		return fmt.Errorf("failed to unlike note: %w", err)
 	}

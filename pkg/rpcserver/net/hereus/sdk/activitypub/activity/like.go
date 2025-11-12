@@ -23,7 +23,7 @@ func Like(session interfaces.Session, req *LikeArguments) error {
 	}
 	id := fmt.Sprintf("https://%s/activitypub/activities/like-%s", session.GetKernel().GetDomain(), randomizer.Random128ByteString())
 	now := time.Now()
-	err = session.GetKernel().ActivityPubDB().LikeNote(session.GetUser().GetActorUrl(), note.Id, now.Format(time.DateTime), id)
+	err = session.GetKernel().ActivityPubDB().RecordLike(session.GetUser().GetActorUrl(), note.Id, now.Format(time.DateTime), id)
 	if err != nil {
 		return fmt.Errorf("failed to like note: %w", err)
 	}

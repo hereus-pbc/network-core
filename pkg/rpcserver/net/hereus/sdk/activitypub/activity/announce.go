@@ -2,6 +2,7 @@ package rpc_net_hereus_sdk_activitypub_activity
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/hereus-pbc/golang-utils/randomizer"
 	"github.com/hereus-pbc/network-core/pkg/interfaces"
@@ -35,7 +36,10 @@ func Announce(session interfaces.Session, req *AnnounceArguments) error {
 	if !CcMap[note.AttributedTo] {
 		req.Cc = append(req.Cc, note.AttributedTo)
 	}
+	now := time.Now()
 	uuid := randomizer.Random128ByteString()
+	id := fmt.Sprintf("https://%s/activitypub/activities/like-%s", session.GetKernel().GetDomain(), uuid)
+	err = session.GetKernel().ActivityPubDB().RecordAnnounce(session.GetUser().GetActorUrl(), req.ObjectId, now.Format(time.DateTime), id, req.To, req.Cc)
 	session.GetKernel().PushOutgoingActivity(types.ActivityStream{
 		LdContext: "https://www.w3.org/ns/activitystreams",
 		Id:        fmt.Sprintf("https://%s/activitypub/activities/announce-%s", session.GetKernel().GetDomain(), uuid),

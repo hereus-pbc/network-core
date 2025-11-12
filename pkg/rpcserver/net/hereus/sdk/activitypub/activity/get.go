@@ -45,7 +45,7 @@ func NoteToSdkObject(kernel interfaces.Kernel, note types.ActivityPubNote) (*Act
 	if err != nil {
 		published = time.Now()
 	}
-	return &ActivityType{
+	object := ActivityType{
 		Summary:        note.Content,
 		ContentWarning: note.Summary,
 		InReplyTo:      note.InReplyTo,
@@ -65,7 +65,10 @@ func NoteToSdkObject(kernel interfaces.Kernel, note types.ActivityPubNote) (*Act
 		Attachments: (func() []string {
 			return []string{}
 		})(),
-	}, nil
+	}
+	object.ActorsLiked = kernel.ActivityPubDB().ListLikes(note.Id)
+	object.ActorsAnnounced = kernel.ActivityPubDB().ListAnnounces(note.Id)
+	return &object, nil
 }
 
 type GetArguments struct {

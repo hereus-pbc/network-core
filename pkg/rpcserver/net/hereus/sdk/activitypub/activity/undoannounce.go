@@ -13,7 +13,7 @@ type UndoAnnounceArguments struct {
 }
 
 func UndoAnnounce(session interfaces.Session, req *UndoAnnounceArguments) error {
-	announcements, err := session.GetKernel().ActivityPubDB().UndoAnnounce(session.GetUser().GetActorUrl(), req.ObjectId)
+	announcements, err := session.GetKernel().ActivityPubDB().RemoveAnnounce(session.GetUser().GetActorUrl(), req.ObjectId)
 	if err != nil {
 		if err.Error() == "no announcements found" {
 			return fmt.Errorf("no announcements found")
