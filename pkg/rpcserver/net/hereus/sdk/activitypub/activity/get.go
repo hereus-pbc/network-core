@@ -4,6 +4,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/hereus-pbc/network-core/pkg/httpserver/helpers"
 	"github.com/hereus-pbc/network-core/pkg/interfaces"
 	"github.com/hereus-pbc/network-core/pkg/types"
 )
@@ -69,6 +70,16 @@ func NoteToSdkObject(kernel interfaces.Kernel, note types.ActivityPubNote) (*Act
 	object.ActorsLiked = kernel.ActivityPubDB().ListLikes(note.Id)
 	object.ActorsAnnounced = kernel.ActivityPubDB().ListAnnounces(note.Id)
 	return &object, nil
+}
+
+func GetRpc() *helpers.RpcFunctionHandlerWithArguments {
+	return &helpers.RpcFunctionHandlerWithArguments{
+		ReqFactory: func() interface{} { return &GetArguments{} },
+		Handler: func(session interfaces.Session, req interface{}) (interface{}, error) {
+			return Get(session, req.(*GetArguments))
+		},
+		Permissions: []string{"net.hereus.sdk.permissions.activitypub"},
+	}
 }
 
 type GetArguments struct {

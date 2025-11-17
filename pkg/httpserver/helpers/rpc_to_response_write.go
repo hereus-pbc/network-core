@@ -7,27 +7,6 @@ import (
 	"reflect"
 )
 
-func isStruct(v interface{}) bool {
-	if v == nil {
-		return false
-	}
-	return reflect.TypeOf(v).Kind() == reflect.Struct
-}
-
-func ElemIfPtrElseSelf(v interface{}) interface{} {
-	if v == nil {
-		return nil
-	}
-	val := reflect.ValueOf(v)
-	if val.Kind() == reflect.Ptr {
-		if val.IsNil() {
-			return nil
-		}
-		return val.Elem().Interface()
-	}
-	return v
-}
-
 func rpcToResponseWriteJSON(output interface{}, w http.ResponseWriter) {
 	w.Header().Set("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(output); err != nil {
@@ -37,12 +16,28 @@ func rpcToResponseWriteJSON(output interface{}, w http.ResponseWriter) {
 }
 
 func rpcToResponseWrite(outputOrPtr interface{}, w http.ResponseWriter) {
-	output := ElemIfPtrElseSelf(outputOrPtr)
-	if isStruct(output) {
+	output := (func(v interface{}) interface{} {
+		if v == nil {
+			return nil
+		}
+		val := reflect.ValueOf(v)
+		if val.Kind() == reflect.Ptr {
+			if val.IsNil() {
+				return nil
+			}
+			return val.Elem().Interface()
+		}
+		return v
+	})(outputOrPtr)
+	if (func(v interface{}) bool {
+		if v == nil {
+			return false
+		}
+		return reflect.TypeOf(v).Kind() == reflect.Struct
+	})(output) {
 		rpcToResponseWriteJSON(output, w)
 		return
 	}
-
 	if t := reflect.TypeOf(output); t != nil {
 		switch t.Kind() {
 		case reflect.Struct, reflect.Map, reflect.Slice, reflect.Array:
@@ -102,12 +97,4 @@ func ConvertRpcResponseToHttpResponse(output interface{}, err error, w http.Resp
 		return
 	}
 	rpcToResponseWrite(output, w)
-}
-
-func TryReadBody(r *http.Request, w http.ResponseWriter, req interface{}) bool {
-	if json.NewDecoder(r.Body).Decode(&req) != nil {
-		http.Error(w, "Invalid request body", http.StatusBadRequest)
-		return false
-	}
-	return true
 }

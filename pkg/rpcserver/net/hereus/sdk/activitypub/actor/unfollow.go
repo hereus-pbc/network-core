@@ -5,9 +5,22 @@ import (
 	"strings"
 
 	"github.com/hereus-pbc/golang-utils/randomizer"
+	"github.com/hereus-pbc/network-core/pkg/httpserver/helpers"
 	"github.com/hereus-pbc/network-core/pkg/interfaces"
 	"github.com/hereus-pbc/network-core/pkg/types"
 )
+
+func UnfollowRpc() *helpers.RpcFunctionHandlerWithArguments {
+	return &helpers.RpcFunctionHandlerWithArguments{
+		ReqFactory: func() interface{} {
+			return &UnfollowArguments{}
+		},
+		Handler: func(session interfaces.Session, req interface{}) (interface{}, error) {
+			return nil, Unfollow(session, req.(*UnfollowArguments))
+		},
+		Permissions: []string{"net.hereus.sdk.permissions.activitypub"},
+	}
+}
 
 type UnfollowArguments struct {
 	Handle string `json:"handle"`

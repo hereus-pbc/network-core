@@ -3,8 +3,19 @@ package rpc_net_hereus_sdk_activitypub_activity
 import (
 	"fmt"
 
+	"github.com/hereus-pbc/network-core/pkg/httpserver/helpers"
 	"github.com/hereus-pbc/network-core/pkg/interfaces"
 )
+
+func ListRpc() *helpers.RpcFunctionHandlerWithArguments {
+	return &helpers.RpcFunctionHandlerWithArguments{
+		ReqFactory: func() interface{} { return &ListArguments{} },
+		Handler: func(session interfaces.Session, req interface{}) (interface{}, error) {
+			return List(session, req.(*ListArguments))
+		},
+		Permissions: []string{"net.hereus.sdk.permissions.activitypub"},
+	}
+}
 
 type ListArguments struct {
 	Filters         map[string]interface{} `json:"filters"`

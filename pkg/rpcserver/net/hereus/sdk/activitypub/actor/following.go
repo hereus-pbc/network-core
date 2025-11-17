@@ -1,8 +1,18 @@
 package rpc_net_hereus_sdk_activitypub_actor
 
 import (
+	"github.com/hereus-pbc/network-core/pkg/httpserver/helpers"
 	"github.com/hereus-pbc/network-core/pkg/interfaces"
 )
+
+func ListFollowingRpc() *helpers.RpcFunctionHandlerNoArguments {
+	return &helpers.RpcFunctionHandlerNoArguments{
+		Handler: func(session interfaces.Session) (interface{}, error) {
+			return ListFollowing(session), nil
+		},
+		Permissions: []string{"net.hereus.sdk.permissions.activitypub"},
+	}
+}
 
 func ListFollowing(session interfaces.Session) *[]HandleActorResponse {
 	var resp []HandleActorResponse

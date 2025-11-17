@@ -4,9 +4,20 @@ import (
 	"fmt"
 
 	"github.com/hereus-pbc/golang-utils/randomizer"
+	"github.com/hereus-pbc/network-core/pkg/httpserver/helpers"
 	"github.com/hereus-pbc/network-core/pkg/interfaces"
 	"github.com/hereus-pbc/network-core/pkg/types"
 )
+
+func UndoAnnounceRpc() *helpers.RpcFunctionHandlerWithArguments {
+	return &helpers.RpcFunctionHandlerWithArguments{
+		ReqFactory: func() interface{} { return &UndoAnnounceArguments{} },
+		Handler: func(session interfaces.Session, req interface{}) (interface{}, error) {
+			return nil, UndoAnnounce(session, req.(*UndoAnnounceArguments))
+		},
+		Permissions: []string{"net.hereus.sdk.permissions.activitypub"},
+	}
+}
 
 type UndoAnnounceArguments struct {
 	ObjectId string `json:"objectId"` // ID of the object being announced ("object")

@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/hereus-pbc/golang-utils/randomizer"
+	"github.com/hereus-pbc/network-core/pkg/httpserver/helpers"
 	"github.com/hereus-pbc/network-core/pkg/interfaces"
 	"github.com/hereus-pbc/network-core/pkg/misc/texttohtml"
 	"github.com/hereus-pbc/network-core/pkg/types"
@@ -24,6 +25,16 @@ type ActivityType struct {
 	Id              string                 `json:"id"`              // ID of the activity (optional, server will generate if empty)
 	ActorsLiked     []string               `json:"actorsLiked"`     // List of actors who liked this activity
 	ActorsAnnounced []string               `json:"actorsAnnounced"` // List of actors who announced this activity
+}
+
+func CreateRpc() *helpers.RpcFunctionHandlerWithArguments {
+	return &helpers.RpcFunctionHandlerWithArguments{
+		ReqFactory: func() interface{} { return &CreateArguments{} },
+		Handler: func(session interfaces.Session, req interface{}) (interface{}, error) {
+			return Create(session, req.(*CreateArguments))
+		},
+		Permissions: []string{"net.hereus.sdk.permissions.activitypub"},
+	}
 }
 
 type CreateArguments struct {

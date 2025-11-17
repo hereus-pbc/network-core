@@ -1,4 +1,4 @@
-package rpc_org_theprotocols_network
+package rpc_org_theprotocols
 
 import (
 	"fmt"
@@ -6,11 +6,20 @@ import (
 	"runtime"
 	"strings"
 
+	"github.com/hereus-pbc/network-core/pkg/httpserver/helpers"
 	"github.com/hereus-pbc/network-core/pkg/interfaces"
 	"github.com/hereus-pbc/network-core/pkg/types"
 )
 
-func HandleNetworkInformation(kernel interfaces.Kernel) (types.Network, error) {
+func NetworkRpc() *helpers.RpcFunctionHandlerNoArgumentsNoSession {
+	return &helpers.RpcFunctionHandlerNoArgumentsNoSession{
+		Handler: func(kernel interfaces.Kernel) (interface{}, error) {
+			return Network(kernel)
+		},
+	}
+}
+
+func Network(kernel interfaces.Kernel) (types.Network, error) {
 	helpUsername, err := kernel.ReadConfigString("help_username")
 	if err != nil {
 		return types.Network{}, fmt.Errorf("failed to read help_username config: %v", err)

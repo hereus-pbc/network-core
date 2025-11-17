@@ -4,9 +4,20 @@ import (
 	"fmt"
 
 	"github.com/hereus-pbc/golang-utils/randomizer"
+	"github.com/hereus-pbc/network-core/pkg/httpserver/helpers"
 	"github.com/hereus-pbc/network-core/pkg/interfaces"
 	"github.com/hereus-pbc/network-core/pkg/types"
 )
+
+func UnlikeRpc() *helpers.RpcFunctionHandlerWithArguments {
+	return &helpers.RpcFunctionHandlerWithArguments{
+		ReqFactory: func() interface{} { return &UnlikeArguments{} },
+		Handler: func(session interfaces.Session, req interface{}) (interface{}, error) {
+			return nil, Unlike(session, req.(*UnlikeArguments))
+		},
+		Permissions: []string{"net.hereus.sdk.permissions.activitypub"},
+	}
+}
 
 type UnlikeArguments struct {
 	ObjectId string `json:"objectId"`

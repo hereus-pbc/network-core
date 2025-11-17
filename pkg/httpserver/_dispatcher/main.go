@@ -12,6 +12,11 @@ type Route struct {
 	Enabled bool
 }
 
+type RpcDomain struct {
+	Handler func(kernel interfaces.Kernel) http.HandlerFunc
+	Enabled bool
+}
+
 type HttpServer struct {
 	kernel       interfaces.Kernel
 	port         int
@@ -28,7 +33,7 @@ func CreateServer(kernel interfaces.Kernel, port int) *HttpServer {
 		customRoutes: make(map[string]Route),
 	}
 	s.mux.HandleFunc("/.well-known/app_info.json", handleAppInfo(kernel))
-	s.mux.HandleFunc("/theprotocols/", dispatchRpcEndpoints(kernel))
+	s.mux.HandleFunc("/theprotocols/", s.dispatchRpcEndpoints(kernel))
 	s.mux.HandleFunc("/ref/", dispatchRef(kernel))
 	s.mux.HandleFunc("/activitypub/", dispatchActivityPub(kernel))
 	s.mux.HandleFunc("/.well-known/webfinger", handleWebFinger(kernel))

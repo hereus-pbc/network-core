@@ -5,9 +5,20 @@ import (
 	"time"
 
 	"github.com/hereus-pbc/golang-utils/randomizer"
+	"github.com/hereus-pbc/network-core/pkg/httpserver/helpers"
 	"github.com/hereus-pbc/network-core/pkg/interfaces"
 	"github.com/hereus-pbc/network-core/pkg/types"
 )
+
+func LikeRpc() *helpers.RpcFunctionHandlerWithArguments {
+	return &helpers.RpcFunctionHandlerWithArguments{
+		ReqFactory: func() interface{} { return &LikeArguments{} },
+		Handler: func(session interfaces.Session, req interface{}) (interface{}, error) {
+			return nil, Like(session, req.(*LikeArguments))
+		},
+		Permissions: []string{"net.hereus.sdk.permissions.activitypub"},
+	}
+}
 
 type LikeArguments struct {
 	ObjectId string `json:"objectId"`

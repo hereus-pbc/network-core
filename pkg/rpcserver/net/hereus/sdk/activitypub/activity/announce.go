@@ -5,9 +5,20 @@ import (
 	"time"
 
 	"github.com/hereus-pbc/golang-utils/randomizer"
+	"github.com/hereus-pbc/network-core/pkg/httpserver/helpers"
 	"github.com/hereus-pbc/network-core/pkg/interfaces"
 	"github.com/hereus-pbc/network-core/pkg/types"
 )
+
+func AnnounceRpc() *helpers.RpcFunctionHandlerWithArguments {
+	return &helpers.RpcFunctionHandlerWithArguments{
+		ReqFactory: func() interface{} { return &AnnounceArguments{} },
+		Handler: func(session interfaces.Session, req interface{}) (interface{}, error) {
+			return nil, Announce(session, req.(*AnnounceArguments))
+		},
+		Permissions: []string{"net.hereus.sdk.permissions.activitypub"},
+	}
+}
 
 type AnnounceArguments struct {
 	ObjectId string   `json:"objectId"` // ID of the object being announced ("object")

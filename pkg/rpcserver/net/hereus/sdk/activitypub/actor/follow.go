@@ -6,9 +6,22 @@ import (
 	"time"
 
 	"github.com/hereus-pbc/golang-utils/randomizer"
+	"github.com/hereus-pbc/network-core/pkg/httpserver/helpers"
 	"github.com/hereus-pbc/network-core/pkg/interfaces"
 	"github.com/hereus-pbc/network-core/pkg/types"
 )
+
+func FollowRpc() *helpers.RpcFunctionHandlerWithArguments {
+	return &helpers.RpcFunctionHandlerWithArguments{
+		ReqFactory: func() interface{} {
+			return &FollowArguments{}
+		},
+		Handler: func(session interfaces.Session, req interface{}) (interface{}, error) {
+			return nil, Follow(session, req.(*FollowArguments))
+		},
+		Permissions: []string{"net.hereus.sdk.permissions.activitypub"},
+	}
+}
 
 type FollowArguments struct {
 	Handle string `json:"handle"`

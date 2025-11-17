@@ -13,4 +13,5 @@ type Session interface {
 	GetSession() *types.SessionsModal
 	GetUser() User
 	GetSessionToken() string
+	GetApp() App
 }
