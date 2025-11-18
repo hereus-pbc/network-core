@@ -9,6 +9,7 @@ import (
 	"github.com/hereus-pbc/network-core/pkg/httpserver/helpers"
 	"github.com/hereus-pbc/network-core/pkg/interfaces"
 	rpc_org_theprotocols "github.com/hereus-pbc/network-core/pkg/rpcserver/org/theprotocols"
+	rpc_org_theprotocols_application "github.com/hereus-pbc/network-core/pkg/rpcserver/org/theprotocols/application"
 	rpc_org_theprotocols_session "github.com/hereus-pbc/network-core/pkg/rpcserver/org/theprotocols/session"
 )
 
@@ -42,8 +43,13 @@ func (s *HttpServer) dispatchRpcEndpoints(kernel interfaces.Kernel) http.Handler
 		domainHandlers := map[string]func(interfaces.Kernel, http.ResponseWriter, *http.Request, string){
 			"theprotocols.org": func(kernel interfaces.Kernel, w http.ResponseWriter, r *http.Request, functionName string) {
 				if helpers.AutoHandleRpcFunction(&helpers.RpcFunctionMapping{
-					"network":           rpc_org_theprotocols.NetworkRpc(),
-					"session.getUserId": rpc_org_theprotocols_session.GetUserIdRpc(),
+					"network":                              rpc_org_theprotocols.NetworkRpc(),
+					"session.getUserId":                    rpc_org_theprotocols_session.GetUserIdRpc(),
+					"application.getData":                  rpc_org_theprotocols_application.GetDataRpc(),
+					"application.getPreferences":           rpc_org_theprotocols_application.GetPreferencesRpc(),
+					"application.getPreferencesLastUpdate": rpc_org_theprotocols_application.GetPreferencesLastUpdateRpc(),
+					"application.savePreferences":          rpc_org_theprotocols_application.SavePreferencesRpc(),
+					"application.saveData":                 rpc_org_theprotocols_application.SaveDataRpc(),
 				}, kernel, r, w, functionName) != nil {
 					http.Error(w, fmt.Sprintf("Unknown endpoint: org.theprotocols.%s", functionName), http.StatusNotFound)
 				}
