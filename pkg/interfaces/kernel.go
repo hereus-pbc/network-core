@@ -15,6 +15,8 @@ type Kernel interface {
 	ReadConfig(key string, result interface{}) error
 	ReadConfigString(key string) (string, error)
 	GetDomain() string
+	GetName() string
+	GetIcon() string
 	SessionManager() SessionManager
 	UserManager() UserManager
 	BlobManager() BlobManager

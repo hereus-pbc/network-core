@@ -11,24 +11,21 @@ import (
 func handleAppInfo(kernel interfaces.Kernel) http.HandlerFunc {
 	return func(w http.ResponseWriter, _ *http.Request) {
 		appInfo := types.AppInfo{
-			Name:               "HereUS Network",
-			Icon:               "https://static.hereus.net/favicon-nobg.png",
+			Name:               kernel.GetName(),
+			Icon:               kernel.GetIcon(),
 			Description:        "",
 			LatestVersion:      kernel.GetSoftwareVersion(),
 			LatestBuild:        kernel.GetSoftwareBuild(),
 			DefaultPreferences: map[string]interface{}{},
 			InitialPermissions: []string{
-				"Security.GenerateSessions",
-				"Security.AccessHiddenInformation",
+				"org.theprotocols.session.permission.security.accessHiddenInformation",
+				"org.theprotocols.session.permission.security.generateSessions",
 			},
 		}
-		appInfoBytes, err := json.Marshal(appInfo)
-		if err != nil {
-			http.Error(w, "Failed to generate app info", http.StatusInternalServerError)
+		w.Header().Set("Content-Type", "application/json")
+		if err := json.NewEncoder(w).Encode(appInfo); err != nil {
+			http.Error(w, "Failed to encode app info", http.StatusInternalServerError)
 			return
 		}
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		_, err = w.Write(appInfoBytes)
 	}
 }
