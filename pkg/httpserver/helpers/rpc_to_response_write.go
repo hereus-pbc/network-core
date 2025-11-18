@@ -38,53 +38,54 @@ func rpcToResponseWrite(outputOrPtr interface{}, w http.ResponseWriter) {
 		rpcToResponseWriteJSON(output, w)
 		return
 	}
-	if t := reflect.TypeOf(output); t != nil {
-		switch t.Kind() {
-		case reflect.Struct, reflect.Map, reflect.Slice, reflect.Array:
-			rpcToResponseWriteJSON(output, w)
-			return
-		default:
-			switch outputType := output.(type) {
-			case map[string]interface{}:
-				rpcToResponseWriteJSON(outputType, w)
-			case []interface{}:
-				rpcToResponseWriteJSON(outputType, w)
-			case nil:
-				w.WriteHeader(http.StatusOK)
+	switch output.(type) {
+	case []byte:
+		w.Header().Set("Content-Type", "application/octet-stream")
+		if _, err := w.Write(output.([]byte)); err != nil {
+			http.Error(w, "Failed to write response", http.StatusInternalServerError)
+		}
+		return
+	default:
+		if t := reflect.TypeOf(output); t != nil {
+			switch t.Kind() {
+			case reflect.Struct, reflect.Map, reflect.Slice, reflect.Array:
+				rpcToResponseWriteJSON(output, w)
 				return
-			case string:
-				w.Header().Set("Content-Type", "text/plain")
-				if _, err := w.Write([]byte(outputType)); err != nil {
-					http.Error(w, "Failed to write response", http.StatusInternalServerError)
-					return
-				}
-			case []byte:
-				w.Header().Set("Content-Type", "application/octet-stream")
-				if _, err := w.Write(outputType); err != nil {
-					http.Error(w, "Failed to write response", http.StatusInternalServerError)
-					return
-				}
-			case int:
-				w.Header().Set("Content-Type", "text/plain")
-				if _, err := w.Write([]byte(fmt.Sprintf("%d", outputType))); err != nil {
-					http.Error(w, "Failed to write response", http.StatusInternalServerError)
-					return
-				}
-			case float64:
-				w.Header().Set("Content-Type", "text/plain")
-				if _, err := w.Write([]byte(fmt.Sprintf("%f", outputType))); err != nil {
-					http.Error(w, "Failed to write response", http.StatusInternalServerError)
-					return
-				}
-			case bool:
-				w.Header().Set("Content-Type", "text/plain")
-				if _, err := w.Write([]byte(fmt.Sprintf("%t", outputType))); err != nil {
-					http.Error(w, "Failed to write response", http.StatusInternalServerError)
-					return
-				}
 			default:
-				w.WriteHeader(http.StatusOK)
-				return
+				switch outputType := output.(type) {
+				case map[string]interface{}:
+					rpcToResponseWriteJSON(outputType, w)
+				case nil:
+					w.WriteHeader(http.StatusOK)
+					return
+				case string:
+					w.Header().Set("Content-Type", "text/plain")
+					if _, err := w.Write([]byte(output.(string))); err != nil {
+						http.Error(w, "Failed to write response", http.StatusInternalServerError)
+						return
+					}
+				case int, int8, int16, int32, int64:
+					w.Header().Set("Content-Type", "text/plain")
+					if _, err := w.Write([]byte(fmt.Sprintf("%d", output))); err != nil {
+						http.Error(w, "Failed to write response", http.StatusInternalServerError)
+						return
+					}
+				case float64:
+					w.Header().Set("Content-Type", "text/plain")
+					if _, err := w.Write([]byte(fmt.Sprintf("%f", output.(float64)))); err != nil {
+						http.Error(w, "Failed to write response", http.StatusInternalServerError)
+						return
+					}
+				case bool:
+					w.Header().Set("Content-Type", "text/plain")
+					if _, err := w.Write([]byte(fmt.Sprintf("%t", output.(bool)))); err != nil {
+						http.Error(w, "Failed to write response", http.StatusInternalServerError)
+						return
+					}
+				default:
+					w.WriteHeader(http.StatusOK)
+					return
+				}
 			}
 		}
 	}
